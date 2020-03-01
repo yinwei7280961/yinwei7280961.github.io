@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="BigInt -任意精度整数BigInt 是第七种 原始类型。BigInt 是一个任意精度的整数。这意味着变量现在可以 表示²⁵³ 数字，而不仅仅是9007199254740992。 123456789101112131415const limit &#x3D; Number.MAX_SAFE_INTEGER;⇨ 9007199254740991limit + 1;⇨ 9007199254740992lim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="es10特性的完整指南">
+<meta property="og:url" content="http://yoursite.com/2020/02/17/es10%E7%89%B9%E6%80%A7%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="yinwei的个人博客">
+<meta property="og:description" content="BigInt -任意精度整数BigInt 是第七种 原始类型。BigInt 是一个任意精度的整数。这意味着变量现在可以 表示²⁵³ 数字，而不仅仅是9007199254740992。 123456789101112131415const limit &#x3D; Number.MAX_SAFE_INTEGER;⇨ 9007199254740991limit + 1;⇨ 9007199254740992lim">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-17T10:32:35.000Z">
+<meta property="article:modified_time" content="2020-02-18T05:13:53.517Z">
+<meta property="article:author" content="yinwei">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/02/17/es10%E7%89%B9%E6%80%A7%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>es10特性的完整指南 | yinwei的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yinwei的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right"></div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/17/es10%E7%89%B9%E6%80%A7%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/c26d8749520ecf2b.png">
+      <meta itemprop="name" content="yinwei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yinwei的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          es10特性的完整指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-17 18:32:35" itemprop="dateCreated datePublished" datetime="2020-02-17T18:32:35+08:00">2020-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-18 13:13:53" itemprop="dateModified" datetime="2020-02-18T13:13:53+08:00">2020-02-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="BigInt-任意精度整数"><a href="#BigInt-任意精度整数" class="headerlink" title="BigInt -任意精度整数"></a>BigInt -任意精度整数</h2><h3 id="BigInt-是第七种-原始类型。"><a href="#BigInt-是第七种-原始类型。" class="headerlink" title="BigInt 是第七种 原始类型。"></a>BigInt 是第七种 原始类型。</h3><p>BigInt 是一个任意精度的整数。这意味着变量现在可以 表示²⁵³ 数字，而不仅仅是9007199254740992。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> limit = <span class="built_in">Number</span>.MAX_SAFE_INTEGER;</span><br><span class="line"></span><br><span class="line">⇨ <span class="number">9007199254740991</span></span><br><span class="line"></span><br><span class="line">limit + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">⇨ <span class="number">9007199254740992</span></span><br><span class="line">limit + <span class="number">2</span>;</span><br><span class="line">⇨ <span class="number">9007199254740992</span> &lt;--- MAX_SAFE_INTEGER + <span class="number">1</span> exceeded</span><br><span class="line"><span class="keyword">const</span> larger = <span class="number">9007199254740991n</span>;</span><br><span class="line">⇨ <span class="number">9007199254740991n</span></span><br><span class="line"><span class="keyword">const</span> integer = BigInt(<span class="number">9007199254740991</span>); <span class="comment">// initialize with number</span></span><br><span class="line">⇨ <span class="number">9007199254740991n</span></span><br><span class="line"><span class="keyword">const</span> same = BigInt(<span class="string">"9007199254740991"</span>); <span class="comment">// initialize with "string"</span></span><br><span class="line">⇨ <span class="number">9007199254740991n</span><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<h2 id="string-prototype-matchAll"><a href="#string-prototype-matchAll" class="headerlink" title="string.prototype.matchAll()"></a>string.prototype.matchAll()</h2><p>如果您运行谷歌搜索JavaScript string match all，第一个结果将是这样的：如何编写正则表达式“match all”？</p>
+<p>最佳结果将建议 String.match 与正则表达式和 /g 一起使用或者带有 /g 的 RegExp.exec 或者带有 /g 的 RegExp.test。</p>
+<p>首先，让我们看看旧规范是如何工作的。</p>
+<p>带字符串参数的 String.match 仅返回第一个匹配：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> string = <span class="string">'Hello'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> matches = string.match(<span class="string">'l'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(matches[<span class="number">0</span>]); <span class="comment">// "l`</span></span><br></pre></td></tr></table></figure>
+
+<p>结果是单个 “l”（注意：匹配存储在 matches[0] 中而不是 matches）</p>
+<p>在“hello”中搜索 “l” 只返回 “l”。</p>
+<p>将 string.match 与 regex 参数一起使用也是如此：</p>
+<p>让我们使用正则表达式 /l/ 找到字符 串“hello” 中的 “l” 字符：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let string = "Hello";</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">let matches = string.match(/l/);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">console.log(matches[0]); // "l"`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="添加-g-混合"><a href="#添加-g-混合" class="headerlink" title="添加 /g 混合"></a>添加 /g 混合</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let string = "Hello";</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">let ret = string.match(/l/g); // (2) [“l”, “l”];`</span></span><br></pre></td></tr></table></figure>
+
+<p>很好，我们使用 &lt; ES10 方式得到了多个匹配，它一直起作用。</p>
+<p>那么为什么要使用全新的 matchAll 方法呢? 在我们更详细地回答这个问题之前，让我们先来看看 捕获组。如果不出意外，你可能会学到一些关于正则表达式的新知识。</p>
+<p>正则表达式捕获组</p>
+<p>在 regex 中捕获组只是从 () 括号中提取一个模式，可以使用 /regex/.exec(string) 和string.match 捕捉组。</p>
+<p>常规捕获组是通过将模式包装在 (pattern) 中创建的，但是要在结果对象上创建 groups 属性，它是: (?<name>pattern)。</p>
+<p>要创建一个新的组名，只需在括号内附加 ?<name>，结果中，分组 (pattern) 匹配将成为 group.name，并附加到 match 对象，以下是一个实例：</p>
+<p>字符串标本匹配：</p>
+<p>这里创建了 match.groups.color 和 match.groups.bird ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`const string = 'black*raven lime*parrot white*seagull';</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">const regex = /(?&lt;color&gt;.*?)\*(?&lt;bird&gt;[a-z0-9]+)/g;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">while (match = regex.exec(string))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  let value = match[0];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  let index = match.index;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  let input = match.input;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(`</span>$&#123;value&#125; at $&#123;index&#125; <span class="keyword">with</span> <span class="string">'$&#123;input&#125;'</span><span class="string">`);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(match.groups.color);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(match.groups.bird);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>需要多次调用 regex.exec 方法来遍历整个搜索结果集。 在每次迭代期间调用 .exec 时，将显示下一个结果（它不会立即返回所有匹配项。），因此使用 while 循环。</p>
+<p>输出如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">`black*raven at 0 with 'black*raven lime*parrot white*seagull'</span></span><br><span class="line"><span class="string">black</span></span><br><span class="line"><span class="string">raven</span></span><br><span class="line"><span class="string">lime*parrot at 11 with 'black*raven lime*parrot white*seagull'</span></span><br><span class="line"><span class="string">lime</span></span><br><span class="line"><span class="string">parrot</span></span><br><span class="line"><span class="string">white*seagull at 23 with 'black*raven lime*parrot white*seagull'</span></span><br><span class="line"><span class="string">white</span></span><br><span class="line"><span class="string">seagull`</span></span><br></pre></td></tr></table></figure>
+
+<p>但奇怪的是:</p>
+<p>如果你从这个正则表达式中删除 /g，你将永远在第一个结果上创建一个无限循环。这在过去是一个巨大的痛苦。想象一下，从某个数据库接收正则表达式时，你不确定它的末尾是否有 /g，你得先检查一下。</p>
+<h3 id="使用-matchAll-的好理由"><a href="#使用-matchAll-的好理由" class="headerlink" title="使用 .matchAll() 的好理由"></a>使用 .matchAll() 的好理由</h3><blockquote>
+<blockquote>
+<ol>
+<li>在与捕获组一起使用时，它可以 更加优雅,捕获组只是使用 () 提取模式的正则表达式的一部分。</li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="2">
+<li>它 返回一个迭代器而 不是一个数组，迭代器本身是有用的。</li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="3">
+<li>迭代器可以使用扩展运算符 (…) 转换为数组。</li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="4">
+<li>它避免了带有 /g 标志的正则表达式，当从数据库或外部源检索未知正则表达式并与陈旧的RegEx 对象一起使用时，它非常有用。</li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="5">
+<li>使用 RegEx 对象创建的正则表达式不能使用点 (.) 操作符链接。</li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="6">
+<li>高级: RegEx 对象更改跟踪最后匹配位置的内部 .lastindex 属性，这在复杂的情况下会造成严重破坏。</li>
+</ol>
+</blockquote>
+</blockquote>
+<p>.matchAll() 是如何工作的</p>
+<p>让我们尝试匹配单词 hello 中字母 e 和 l 的所有实例， 因为返回了迭代器，所以可以使用 for…of 循环遍历它：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Match all occurrences of the letters: "e" or "l" </span></span><br><span class="line"></span><br><span class="line"><span class="string">`let iterator = "hello".matchAll(/[el]/);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">for (const match of iterator)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(match);`</span></span><br></pre></td></tr></table></figure>
+
+<p>这一次你可以跳过 /g， .matchall 方法不需要它，结果如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`[ 'e', index: 1, input: 'hello' ] // Iteration 1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[ 'l', index: 2, input: 'hello' ] // Iteration 2</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[ 'l', index: 3, input: 'hello' ] // Iteration 3`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-matchAll-捕获组示例："><a href="#使用-matchAll-捕获组示例：" class="headerlink" title="使用 .matchAll() 捕获组示例："></a>使用 .matchAll() 捕获组示例：</h2><p>.matchAll  具有上面列出的所有好处。它是一个迭代器，可以用 for…of 循环遍历它,这就是整个语法的不同。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`const string = 'black*raven lime*parrot white*seagull';</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">const regex = /(?&lt;color&gt;.*?)\*(?&lt;bird&gt;[a-z0-9]+)/;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">for (const match of string.matchAll(regex)) &#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  let value = match[0];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  let index = match.index;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  let input = match.input;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(`</span>$&#123;value&#125; at $&#123;index&#125; <span class="keyword">with</span> <span class="string">'$&#123;input&#125;'</span><span class="string">`);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(match.groups.color);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log(match.groups.bird);</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+<p>请注意已经没有 /g 标志，因为 .matchAll() 已经包含了它，打印如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`black*raven at 0 with 'black*raven lime*parrot white*seagull'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">black</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">raven</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">lime*parrot at 11 with 'black*raven lime*parrot white*seagull'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">lime</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">parrot</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">white*seagull at 23 with 'black*raven lime*parrot white*seagull'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">white</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">seagull`</span></span><br></pre></td></tr></table></figure>
+
+<p>也许在美学上它与原始正则表达式非常相似，执行while循环实现。但是如前所述，由于上面提到的许多原因，这是更好的方法，移除 /g 不会导致无限循环。</p>
+<p>动态导入</p>
+<p>现在可以将导入分配给变量：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">element.addEventListener(<span class="string">'click'</span>, <span class="keyword">async</span>() =&gt; &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="built_in">module</span> = <span class="keyword">await</span> <span class="keyword">import</span>(<span class="string">`./api-scripts/button-click.js`</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">module</span>.clickEvent();</span><br><span class="line"></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Array-flat"><a href="#Array-flat" class="headerlink" title="Array.flat()"></a>Array.flat()</h2><p>扁平化多维数组：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let multi = [1,2,3,[4,5,6,[7,8,9,[10,11,12]]]];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">multi.flat();               // [1,2,3,4,5,6,Array(4)]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">multi.flat().flat();        // [1,2,3,4,5,6,7,8,9,Array(3)]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">multi.flat().flat().flat(); // [1,2,3,4,5,6,7,8,9,10,11,12]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">multi.flat(Infinity);       // [1,2,3,4,5,6,7,8,9,10,11,12]`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Array-flatMap"><a href="#Array-flatMap" class="headerlink" title="Array.flatMap()"></a>Array.flatMap()</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let array = [1, 2, 3, 4, 5];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">array.map(x =&gt; [x, x * 2]);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">let array = [1, 2, 3, 4, 5];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">array.map(x =&gt; [x, x * 2]);`</span></span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`[Array(2),Array(2),Array(2),Array(2),Array(2)]</span></span><br><span class="line"><span class="string">0: (2) [1, 2]</span></span><br><span class="line"><span class="string">1: (2) [2, 4]</span></span><br><span class="line"><span class="string">2: (2) [3, 6]</span></span><br><span class="line"><span class="string">3: (2) [4, 8]</span></span><br><span class="line"><span class="string">4: (2) [5, 10]`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-flatMap-方法："><a href="#使用-flatMap-方法：" class="headerlink" title="使用 flatMap 方法："></a>使用 flatMap 方法：</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`array.flatMap(v =&gt; [v, v * 2]);</span></span><br><span class="line"><span class="string">[1, 2, 2, 4, 3, 6, 4, 8, 5, 10]`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Object-fromEntries"><a href="#Object-fromEntries" class="headerlink" title="Object.fromEntries()"></a>Object.fromEntries()</h2><p>将键值对列表转换为对象:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let obj = &#123; apple : 10, orange : 20, banana : 30 &#125;;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">let entries = Object.entries(obj);</span></span><br></pre></td></tr></table></figure>
+<h2 id="entries"><a href="#entries" class="headerlink" title="entries;"></a>entries;</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">3</span>) [<span class="built_in">Array</span>(<span class="number">2</span>), <span class="built_in">Array</span>(<span class="number">2</span>), <span class="built_in">Array</span>(<span class="number">2</span>)]</span><br><span class="line"></span><br><span class="line"><span class="number">0</span>: (<span class="number">2</span>) [<span class="string">"apple"</span>, <span class="number">10</span>]</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>: (<span class="number">2</span>) [<span class="string">"orange"</span>, <span class="number">20</span>]</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>: (<span class="number">2</span>) [<span class="string">"banana"</span>, <span class="number">30</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fromEntries = <span class="built_in">Object</span>.fromEntries(entries);</span><br><span class="line"></span><br><span class="line">&#123; <span class="attr">apple</span>: <span class="number">10</span>, <span class="attr">orange</span>: <span class="number">20</span>, <span class="attr">banana</span>: <span class="number">30</span> &#125;<span class="string">`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="String-trimStart-与-String-trimEnd"><a href="#String-trimStart-与-String-trimEnd" class="headerlink" title="String.trimStart() 与 String.trimEnd()"></a>String.trimStart() 与 String.trimEnd()</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let greeting = "     Space around     ";</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">greeting.trimEnd();   // "     Space around";</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">greeting.trimStart(); // "Space around     ";`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="格式良好的-JSON-stringify"><a href="#格式良好的-JSON-stringify" class="headerlink" title="格式良好的 JSON.stringify()"></a>格式良好的 JSON.stringify()</h2><p>此更新修复了字符 U+D800 到 U+DFFF 的处理，有时可以进入 JSON 字符串。 这可能是一个问题，因为 JSON.stringify 可能会将这些数字格式化为没有等效 UTF-8 字符的值, 但 JSON 格式需要 UTF-8 编码。</p>
+<p>解析方法使用格式良好的JSON字符串，如:</p>
+<p><code>&#39;{ “prop1” : 1, &quot;prop2&quot; : 2 }&#39;; // A well-formed JSON format string</code></p>
+<p>注意，要创建正确 JSON 格式的字符串，绝对需要在属性名周围加上双引号。缺少或任何其他类型的引号都不会生成格式良好的JSON。</p>
+<p><code>&#39;{ “prop1” : 1, &quot;meth&quot; : () =&gt; {}}&#39;; // Not JSON format string</code><br>JSON 字符串格式与 Object Literal 不同，后者看起来几乎一样，但可以使用任何类型的引号括住属性名，也可以包含方法(JSON格式不允许使用方法):</p>
+<p><code>let object_literal={ property: 1, meth:()=&gt; {}};</code></p>
+<p>不管怎样，一切似乎都很好。第一个示例看起来是兼容的。但它们也是简单的例子，大多数情况下都能顺利地工作!</p>
+<h2 id="U-2028-和-U-2029-字符"><a href="#U-2028-和-U-2029-字符" class="headerlink" title="U+2028 和 U+2029 字符"></a>U+2028 和 U+2029 字符</h2><p>问题是， ES10 之前的 EcmaScript 实际上并不完全支持 JSON 格式。前 ES10 时代不接受未转义行分隔符 U+2028 和 段落分隔符 U+2029 字符:</p>
+<h2 id="U-2029-is-the-line-separator"><a href="#U-2029-is-the-line-separator" class="headerlink" title="U+2029 is the line separator"></a>U+2029 is the line separator</h2><p>U+2029 is the paragraph separator. Sometimes it can lurk into your JSON formatted string</p>
+<h2 id="对于-U-D800-U-DFFF-之间的所有字符也是如此"><a href="#对于-U-D800-U-DFFF-之间的所有字符也是如此" class="headerlink" title="对于 U+D800 - U+DFFF 之间的所有字符也是如此"></a>对于 U+D800 - U+DFFF 之间的所有字符也是如此</h2><p>如果这些字符潜入 JSON 格式的字符串(假设来自数据库记录)，你可能会花费数小时试图弄清楚为什么程序的其余部分会产生解析错误。</p>
+<p>因此，如果你传递 eval 这样的字符串 “console.log(‘ hello ‘)”，它将执行 JavaScript语句 (通过尝试将字符串转换为实际代码),也类似于 JSON.parse 将处理你的 JSON 字符串的方式。</p>
+<h2 id="稳定的-Array-prototype-sort"><a href="#稳定的-Array-prototype-sort" class="headerlink" title="稳定的 Array.prototype.sort()"></a>稳定的 Array.prototype.sort()</h2><p>V8 之前的实现对包含10个以上项的数组使用了一种 不稳定 的快速排序算法。</p>
+<p>一个稳定的排序算法是当两个键值相等的对象在排序后的输出中出现的顺序与在未排序的输入中出现的顺序相同时。</p>
+<p>但情况不再是这样了，ES10 提供了一个稳定的数组排序:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`var fruit = [</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Apple",      count: 13, &#125;,</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Pear",       count: 12, &#125;,</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Banana",     count: 12, &#125;,</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Strawberry", count: 11, &#125;,</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Cherry",     count: 11, &#125;,</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Blackberry", count: 10, &#125;,</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#123; name: "Pineapple",  count: 10, &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">];`</span></span><br></pre></td></tr></table></figure>
+<p>##// 创建排序函数:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let my_sort = (a, b) =&gt; a.count - b.count;`</span></span><br><span class="line"><span class="comment">// 执行稳定的ES10排序:</span></span><br><span class="line"><span class="string">`let sorted = fruit.sort(my_sort);`</span></span><br><span class="line"><span class="string">`console.log(sorted);`</span></span><br></pre></td></tr></table></figure>
+
+<p>控制台输出(项目以相反的顺序出现):</p>
+<h2 id="新的F-unction-toString"><a href="#新的F-unction-toString" class="headerlink" title="新的F unction.toString()"></a>新的F unction.toString()</h2><p>函数是对象，并且每个对象都有一个 .toString() 方法，因为它最初存在于Object.prototype.toString() 上。 所有对象（包括函数）都是通过基于原型的类继承从它继承的。</p>
+<p>这意味着我们以前已经有 funcion.toString() 方法了。</p>
+<p>但是 ES10 进一步尝试标准化所有对象和内置函数的字符串表示。 以下是各种新案例：</p>
+<h2 id="典型的例子"><a href="#典型的例子" class="headerlink" title="典型的例子:"></a>典型的例子:</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`function()&#123;console.log('Hello there.')&#125;.toString();</span></span><br><span class="line"><span class="string">控制台输出(函数体的字符串格式:)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    ⇨ function () &#123; console.log('Hello there.'); &#125;`</span></span><br></pre></td></tr></table></figure>
+
+
+<p>下面是剩下的例子:</p>
+<h3 id="直接在方法名-toString"><a href="#直接在方法名-toString" class="headerlink" title="直接在方法名 .toString()"></a>直接在方法名 .toString()</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`Number.parseInt.toString();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">⇨ function parseInt() &#123; [native code] &#125;`</span></span><br></pre></td></tr></table></figure>
+<p>绑定上下文:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`function () &#123; &#125;.bind(0).toString();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">⇨ function () &#123; [native code] &#125;`</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="内置可调用函数对象"><a href="#内置可调用函数对象" class="headerlink" title="内置可调用函数对象:"></a>内置可调用函数对象:</h3><p>`Symbol.toString();</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">⇨ <span class="function"><span class="keyword">function</span> <span class="title">Symbol</span>(<span class="params"></span>) </span>&#123; [native code] &#125;<span class="string">`</span></span><br></pre></td></tr></table></figure>
+
+<p>动态生成的函数:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`function* () &#123; &#125;.toString();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">⇨ function* () &#123; &#125;`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="prototype-toString"><a href="#prototype-toString" class="headerlink" title="prototype.toString"></a>prototype.toString</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`Function.prototype.toString.call(&#123;&#125;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">⇨ Function.prototype.toString requires that 'this' be a Function"`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="可选的-Catch-Binding"><a href="#可选的-Catch-Binding" class="headerlink" title="可选的 Catch Binding"></a>可选的 Catch Binding</h2><p>在过去，try/catch 语句中的 catch 语句需要一个变量。 try/catch 语句帮助捕获终端级别的错误:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`try &#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  // Call a non-existing function undefined_Function</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  undefined_Function("I'm trying");</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">catch(error) &#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  // Display the error if statements inside try above fail</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  console.log( error ); // undefined_Function is undefined</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>在某些情况下，所需的错误变量是未使用的:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`try &#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  JSON.parse(text); // &lt;--- this will fail with "text not defined"</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  return true; &lt;--- exit without error even if there is one</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">catch (redundant_sometmes) &lt;--- this makes error variable redundant</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  return false;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+<p>编写此代码的人通过尝试强制 true 退出 try 子句。但是，这并不是实际发生的情况</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">`(() =&gt; &#123;</span></span><br><span class="line"><span class="string">    try &#123;</span></span><br><span class="line"><span class="string">        JSON.parse(text)</span></span><br><span class="line"><span class="string">        return true</span></span><br><span class="line"><span class="string">    &#125; catch(err) &#123;</span></span><br><span class="line"><span class="string">        return false</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;)()</span></span><br><span class="line"><span class="string">=&gt; false`</span></span><br></pre></td></tr></table></figure>
+
+<p>在 ES10 中，捕获错误的变量是可选的</p>
+<p>现在可以跳过错误变量:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`try &#123;</span></span><br><span class="line"><span class="string">    JSON.parse(text);</span></span><br><span class="line"><span class="string">    return true;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">catch</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    return false;</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>目前还无法测试上一个示例中的 try 语句的结果，但一旦它出来，我将更新这部分。</p>
+<h2 id="标准化-globalThis-对象"><a href="#标准化-globalThis-对象" class="headerlink" title="标准化 globalThis 对象"></a>标准化 globalThis 对象</h2><p>这在ES10之前， globalThis 还没有标准化。</p>
+<p>在产品代码中，你可以自己编写这个怪物，在多个平台上“标准化”它:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`var getGlobal = function () &#123;</span></span><br><span class="line"><span class="string">  if (typeof self !== 'undefined') &#123; return self; &#125;</span></span><br><span class="line"><span class="string">  if (typeof window !== 'undefined') &#123; return window; &#125;</span></span><br><span class="line"><span class="string">  if (typeof global !== 'undefined') &#123; return global; &#125;</span></span><br><span class="line"><span class="string">  throw new Error('unable to locate global object');</span></span><br><span class="line"><span class="string">&#125;;`</span></span><br></pre></td></tr></table></figure>
+
+<p>但即使这样也不总是奏效。因此，ES10 添加了 globalThis 对象，从现在开始，该对象用于在任何平台上访问全局作用域:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 访问全局数组构造函数</span></span><br><span class="line"><span class="string">`globalThis.Array(0, 1, 2);</span></span><br><span class="line"><span class="string">⇨ [0, 1, 2]`</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类似于 ES5 之前的 window.v = &#123; flag: true &#125;</span></span><br><span class="line"><span class="string">`globalThis.v = &#123; flag: true &#125;;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`console.log(globalThis.v);</span></span><br><span class="line"><span class="string">⇨ &#123; flag: true &#125;`</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Symbol-description"><a href="#Symbol-description" class="headerlink" title="Symbol.description"></a>Symbol.description</h2><p>description 是一个只读属性，它返回 Symbol 对象的可选描述。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`let mySymbol = 'My Symbol';</span></span><br><span class="line"><span class="string">let symObj = Symbol(mySymbol);</span></span><br><span class="line"><span class="string">symObj; // Symbol(My Symbol)</span></span><br><span class="line"><span class="string">symObj.description; // "My Symbol"`</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Hashbang-语法"><a href="#Hashbang-语法" class="headerlink" title="Hashbang  语法"></a>Hashbang  语法</h2><p>也就是 unix 用户熟悉的 shebang。它指定一个解释器(什么将执行JavaScript文件?)。</p>
+<p>ES10标准化，我不会对此进行详细介绍，因为从技术上讲，这并不是一个真正的语言特性，但它基本上统一了 JavaScript 在服务器端的执行方式。</p>
+<p><code>$ ./index.js</code></p>
+<p>代替</p>
+<p><code>$ node index.js</code></p>
+<p>##ES10类:private、static 和 公共成员</p>
+<p>新的语法字符 #octothorpe（hash tag）现在用于直接在类主体的范围内定义变量，函数，getter 和 setter ……以及构造函数和类方法。</p>
+<p>下面是一个毫无意义的例子，它只关注新语法:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`class Raven extends Bird &#123;</span></span><br><span class="line"><span class="string">#state = &#123; eggs: 10&#125;;</span></span><br><span class="line"><span class="string">***</span></span><br><span class="line"><span class="string">// getter</span></span><br><span class="line"><span class="string">    get #eggs() &#123; </span></span><br><span class="line"><span class="string">        return state.eggs;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">// setter</span></span><br><span class="line"><span class="string">    set #eggs(value) &#123;</span></span><br><span class="line"><span class="string">        this.#state.eggs = value;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    ***</span></span><br><span class="line"><span class="string">#lay() &#123;</span></span><br><span class="line"><span class="string">        this.#eggs++;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">constructor() &#123;</span></span><br><span class="line"><span class="string">        super();</span></span><br><span class="line"><span class="string">        this.#lay.bind(this);</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    ***</span></span><br><span class="line"><span class="string">#render() &#123;</span></span><br><span class="line"><span class="string">        /* paint UI */</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+<hr>
+<p>原文：(<a href="https://medium.freecodecamp.org/the-complete-guide-to-es10-features-5fd0feb9513a" target="_blank" rel="noopener">https://medium.freecodecamp.org/the-complete-guide-to-es10-features-5fd0feb9513a</a>)</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/17/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/17/%E5%8E%9F%E7%94%9F%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AApromise/" rel="next" title="原生实现一个promise">
+      原生实现一个promise <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BigInt-任意精度整数"><span class="nav-number">1.</span> <span class="nav-text">BigInt -任意精度整数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BigInt-是第七种-原始类型。"><span class="nav-number">1.1.</span> <span class="nav-text">BigInt 是第七种 原始类型。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string-prototype-matchAll"><span class="nav-number">2.</span> <span class="nav-text">string.prototype.matchAll()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加-g-混合"><span class="nav-number">3.</span> <span class="nav-text">添加 &#x2F;g 混合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-matchAll-的好理由"><span class="nav-number">3.1.</span> <span class="nav-text">使用 .matchAll() 的好理由</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-matchAll-捕获组示例："><span class="nav-number">4.</span> <span class="nav-text">使用 .matchAll() 捕获组示例：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Array-flat"><span class="nav-number">5.</span> <span class="nav-text">Array.flat()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Array-flatMap"><span class="nav-number">6.</span> <span class="nav-text">Array.flatMap()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-flatMap-方法："><span class="nav-number">7.</span> <span class="nav-text">使用 flatMap 方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-fromEntries"><span class="nav-number">8.</span> <span class="nav-text">Object.fromEntries()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#entries"><span class="nav-number">9.</span> <span class="nav-text">entries;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String-trimStart-与-String-trimEnd"><span class="nav-number">10.</span> <span class="nav-text">String.trimStart() 与 String.trimEnd()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#格式良好的-JSON-stringify"><span class="nav-number">11.</span> <span class="nav-text">格式良好的 JSON.stringify()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#U-2028-和-U-2029-字符"><span class="nav-number">12.</span> <span class="nav-text">U+2028 和 U+2029 字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#U-2029-is-the-line-separator"><span class="nav-number">13.</span> <span class="nav-text">U+2029 is the line separator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对于-U-D800-U-DFFF-之间的所有字符也是如此"><span class="nav-number">14.</span> <span class="nav-text">对于 U+D800 - U+DFFF 之间的所有字符也是如此</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#稳定的-Array-prototype-sort"><span class="nav-number">15.</span> <span class="nav-text">稳定的 Array.prototype.sort()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新的F-unction-toString"><span class="nav-number">16.</span> <span class="nav-text">新的F unction.toString()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#典型的例子"><span class="nav-number">17.</span> <span class="nav-text">典型的例子:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#直接在方法名-toString"><span class="nav-number">17.1.</span> <span class="nav-text">直接在方法名 .toString()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内置可调用函数对象"><span class="nav-number">17.2.</span> <span class="nav-text">内置可调用函数对象:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prototype-toString"><span class="nav-number">18.</span> <span class="nav-text">prototype.toString</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可选的-Catch-Binding"><span class="nav-number">19.</span> <span class="nav-text">可选的 Catch Binding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准化-globalThis-对象"><span class="nav-number">20.</span> <span class="nav-text">标准化 globalThis 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symbol-description"><span class="nav-number">21.</span> <span class="nav-text">Symbol.description</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hashbang-语法"><span class="nav-number">22.</span> <span class="nav-text">Hashbang  语法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yinwei"
+      src="/images/c26d8749520ecf2b.png">
+  <p class="site-author-name" itemprop="name">yinwei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yinwei</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

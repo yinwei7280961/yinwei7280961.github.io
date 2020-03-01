@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="来自于《js高级程序设计》； 注意作用域1.避免全局查找123456789function update()&amp;#123;    var doc&#x3D;document;    var img&#x3D;doc.getElementByTagName(&#39;img&#39;);    for(var i&#x3D;0,len&#x3D;img.length;i&lt;len;i++)&amp;#123;        img[i].title&#x3D;&#96;$&amp;#1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js性能优化">
+<meta property="og:url" content="http://yoursite.com/2020/02/18/js%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="yinwei的个人博客">
+<meta property="og:description" content="来自于《js高级程序设计》； 注意作用域1.避免全局查找123456789function update()&amp;#123;    var doc&#x3D;document;    var img&#x3D;doc.getElementByTagName(&#39;img&#39;);    for(var i&#x3D;0,len&#x3D;img.length;i&lt;len;i++)&amp;#123;        img[i].title&#x3D;&#96;$&amp;#1">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-18T11:08:25.000Z">
+<meta property="article:modified_time" content="2020-02-19T03:11:51.870Z">
+<meta property="article:author" content="yinwei">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/02/18/js%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>js性能优化 | yinwei的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yinwei的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right"></div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/18/js%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/c26d8749520ecf2b.png">
+      <meta itemprop="name" content="yinwei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yinwei的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          js性能优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-18 19:08:25" itemprop="dateCreated datePublished" datetime="2020-02-18T19:08:25+08:00">2020-02-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-19 11:11:51" itemprop="dateModified" datetime="2020-02-19T11:11:51+08:00">2020-02-19</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>来自于《js高级程序设计》；</p>
+<h2 id="注意作用域"><a href="#注意作用域" class="headerlink" title="注意作用域"></a>注意作用域</h2><h3 id="1-避免全局查找"><a href="#1-避免全局查找" class="headerlink" title="1.避免全局查找"></a>1.避免全局查找</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">update</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> doc=<span class="built_in">document</span>;</span><br><span class="line">    <span class="keyword">var</span> img=doc.getElementByTagName(<span class="string">'img'</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>,len=img.length;i&lt;len;i++)&#123;</span><br><span class="line">        img[i].title=<span class="string">`<span class="subst">$&#123;doc.title&#125;</span> image  <span class="subst">$&#123;i&#125;</span>`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> msg = doc.getElementBy(<span class="string">'msg);</span></span><br><span class="line"><span class="string">    msg.innerHTML='</span>UPdate complete.<span class="string">';</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-避免with语句"><a href="#2-避免with语句" class="headerlink" title="2.避免with语句"></a>2.避免with语句</h3><p>和函数类似，with语句会创建自己的作用域，因此为增加其中执行的代码的作用域链的长度。<br>由于额外的作用域链查找，在with语句中执行的代码要比外面执行的代码慢</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.time(<span class="string">'with'</span>)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateBody</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">with</span>(<span class="built_in">document</span>)&#123;</span><br><span class="line">        <span class="keyword">var</span> ul=<span class="string">'&lt;ul&gt;'</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">100000</span>;i++)&#123;</span><br><span class="line">            ul+=<span class="string">`&lt;li&gt;<span class="subst">$&#123;i&#125;</span>&lt;/li&gt;`</span></span><br><span class="line">        &#125;</span><br><span class="line">        ul+=<span class="string">'&lt;/ul&gt;'</span>;</span><br><span class="line">        body.innerHTML=ul;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">updateBody();</span><br><span class="line"><span class="built_in">console</span>.timeEnd(<span class="string">'with'</span>);</span><br><span class="line"><span class="built_in">console</span>.time(<span class="string">'no with'</span>)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateBody</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> body=<span class="built_in">document</span>.body;</span><br><span class="line">    <span class="keyword">var</span> ul=<span class="string">'&lt;ul&gt;'</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">100000</span>;i++)&#123;</span><br><span class="line">            ul+=<span class="string">`&lt;li&gt;<span class="subst">$&#123;i&#125;</span>&lt;/li&gt;`</span></span><br><span class="line">        &#125;</span><br><span class="line">        ul+=<span class="string">'&lt;/ul&gt;'</span>;</span><br><span class="line">        body.innerHTML=ul;</span><br><span class="line">&#125;</span><br><span class="line">updateBody();</span><br><span class="line"><span class="built_in">console</span>.timeEnd(<span class="string">'no with'</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="2、选择正确方法"><a href="#2、选择正确方法" class="headerlink" title="2、选择正确方法"></a>2、选择正确方法</h2><h3 id="1-避免不必要的属性查找"><a href="#1-避免不必要的属性查找" class="headerlink" title="1.避免不必要的属性查找"></a>1.避免不必要的属性查找</h3><table>
+    <tr>
+        <th>
+        标记名称
+        </th>
+        <th colspan='2'>
+        描叙
+        </th>
+    </tr>
+    <tr>
+        <td>
+        O(1)
+        </td>
+        <td>
+        常数
+        </td>
+        <td>
+        不管有多少值，执行时间都是恒定的。一般表示简单之和存储在变量中的值
+        </td>
+    </tr>
+    <tr>
+        <td>
+        O(log n)
+        </td>
+        <td>
+        对数
+        </td>
+        <td>
+        总的执行时间和值的数量相关，但是要完成算法不一定要获取每一个值。例如：二分查找
+        </td>
+    </tr>
+    <tr>
+        <td>
+        O(n)
+        </td>
+        <td>
+        线性
+        </td>
+        <td>
+        总执行时间和值的数量直接相关。例如：遍历某个数组的所有元素
+        </td>
+    </tr>
+    <tr>
+        <td>
+        O(n^2)
+        </td>
+        <td>
+        平方
+        </td>
+        <td>
+        总执行时间和值的数量有关，每个值至少获取n次。例如：插入排序
+        </td>
+    </tr>
+</table>
+
+
+<p>一旦多次用到对象属性，应该将其存储在局部变量中。第一次访问值会是O(n),然后后续的访问都会<br>是O(1),就会节省很多。例如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> query=<span class="built_in">window</span>.location.href.substring(<span class="built_in">window</span>.location.href.indexOf(<span class="string">'?'</span>));</span><br><span class="line"><span class="comment">//改为</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="built_in">window</span>.location.href;</span><br><span class="line"><span class="keyword">var</span> query = url.substring(url.indexOf(<span class="string">'?'</span>));</span><br></pre></td></tr></table></figure>
+<h3 id="2-优化循环"><a href="#2-优化循环" class="headerlink" title="2.优化循环"></a>2.优化循环</h3><p>  1.减值迭代—-大多数循环使用一个从0开会、添加到某个特定值的迭代器。在很多情况下，从最大值开始，在循环中不断减值的迭代器更加高效<br>  2.简化终止条件—由于每次循环过程都会计算终止条件，所以必须保证它尽可能快。<br>  3.简化循环体—-循环体是执行最多的，所以要确保其被最大限度地优化。<br>  4.使用后测试循环—最常用for循环和while循环都是前测试循环。而如do-while这种后测试循环，可以避免最初终止条件的计算，因此运行更快。<br>  测试了 while是比for略优，旦差距不大。<br>  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.time(<span class="string">'for'</span>)</span><br><span class="line">  <span class="keyword">var</span> arr=[];</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">1000000</span>;i++)&#123;</span><br><span class="line">      arr.push(i);</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="built_in">console</span>.timeEnd(<span class="string">'for'</span>);</span><br><span class="line">  <span class="built_in">console</span>.time(<span class="string">'while'</span>);</span><br><span class="line">  <span class="keyword">var</span> arr1=[],i=<span class="number">1000000</span>;</span><br><span class="line">  <span class="keyword">while</span>(--i&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">      arr1.push(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.timeEnd(<span class="string">'while'</span>);</span><br><span class="line">  <span class="keyword">for</span>: <span class="number">57.841552734375</span>ms</span><br><span class="line">   <span class="keyword">while</span>: <span class="number">50.230224609375</span>ms</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-展开循环"><a href="#3-展开循环" class="headerlink" title="3.展开循环"></a>3.展开循环</h3><p>  由Andrew B.King所著的Speed Up Your Site（New Rides,2003）提出了一个更快的Duff装置技术，将do-while循环分成2个单独的循环。以下是例子<br>   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">//假设values不为空</span></span><br><span class="line">  <span class="keyword">var</span> interations=<span class="built_in">Math</span>.ceil(values.length/<span class="number">8</span>);</span><br><span class="line">  <span class="keyword">var</span> leftover=values.length%<span class="number">8</span>;</span><br><span class="line">  <span class="keyword">var</span> i=<span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span>(leftover&gt;<span class="number">0</span>)&#123;</span><br><span class="line">     <span class="keyword">do</span>&#123;</span><br><span class="line">         process(values[i++]);</span><br><span class="line">     &#125;<span class="keyword">while</span>(--leftover&gt;<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">do</span>&#123;</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">      process(values[i++]);</span><br><span class="line">  &#125;<span class="keyword">while</span>(--iterations&gt;<span class="number">0</span>);</span><br><span class="line">  <span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string">### 4.避免双重解释 </span></span><br><span class="line"><span class="string">  当javascript代码想解析javascript的时候就会存在双重解释惩罚。当使用eval（）函数或者是function构造函数以及使用setTimeout传一个字符串参数时都会发生这种情况。下面有一些例子</span></span><br><span class="line"><span class="string">  `</span><span class="string">``</span>javascipt</span><br><span class="line">  <span class="comment">//某些代码求值---避免！！</span></span><br><span class="line">  <span class="built_in">eval</span>(<span class="string">'alert("hello world")'</span>);</span><br><span class="line">  <span class="comment">//创建新函数---避免！！</span></span><br><span class="line">  <span class="keyword">var</span> sayHi=<span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">'alert("hello world")'</span>);</span><br><span class="line">  <span class="comment">//设置超时---避免！！</span></span><br><span class="line">  setTimeout(<span class="string">'alert("hello world")'</span>,<span class="number">500</span>);</span><br><span class="line">   <span class="comment">//修正之后</span></span><br><span class="line">  alert(<span class="string">"hello world"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> sayHi=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;alert(<span class="string">"hello world"</span>)&#125;;</span><br><span class="line"></span><br><span class="line">  setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;alert(<span class="string">"hello world"</span>)&#125;,<span class="number">500</span>);</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-性能的其他注意事项"><a href="#5-性能的其他注意事项" class="headerlink" title="5.性能的其他注意事项"></a>5.性能的其他注意事项</h3><ul>
+<li>1 原生方法较快—只要有可能，使用原生方法而不是自己用javascript重写一个。</li>
+<li>2 Switch 语句较快—如果有一系列复杂的if-else语句，可以转换成单个swicth语句则可以得到更快的代码</li>
+<li>3 位运算较快—当进行数学运算时候，位运算操作要比人布尔运算或者算术运算快。 </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/18/js%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7/" rel="prev" title="js高级技巧">
+      <i class="fa fa-chevron-left"></i> js高级技巧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/01/git%E5%91%BD%E4%BB%A4/" rel="next" title="git命令">
+      git命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#注意作用域"><span class="nav-number">1.</span> <span class="nav-text">注意作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-避免全局查找"><span class="nav-number">1.1.</span> <span class="nav-text">1.避免全局查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-避免with语句"><span class="nav-number">1.2.</span> <span class="nav-text">2.避免with语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、选择正确方法"><span class="nav-number">2.</span> <span class="nav-text">2、选择正确方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-避免不必要的属性查找"><span class="nav-number">2.1.</span> <span class="nav-text">1.避免不必要的属性查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-优化循环"><span class="nav-number">2.2.</span> <span class="nav-text">2.优化循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-展开循环"><span class="nav-number">2.3.</span> <span class="nav-text">3.展开循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-性能的其他注意事项"><span class="nav-number">2.4.</span> <span class="nav-text">5.性能的其他注意事项</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yinwei"
+      src="/images/c26d8749520ecf2b.png">
+  <p class="site-author-name" itemprop="name">yinwei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yinwei</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
